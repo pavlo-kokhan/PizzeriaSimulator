@@ -1,0 +1,67 @@
+# Maven target directory
+/target/
+
+# Maven dependency directory
+/.mvn/
+!.mvn/wrapper/maven-wrapper.jar
+
+# Eclipse and IntelliJ IDEA project files
+.classpath
+.project
+.settings/
+.idea/
+*.iml
+*.ipr
+*.iws
+*.sublime-workspace
+
+# Log files
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Maven-specific files
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+
+# Java-related files
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs
+logs/
+*.log
+
+# Windows-specific files
+Thumbs.db
+ehthumbs.db
+
+# macOS-specific files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Backup files
+*.bak
+*.swp
+
+# JetBrains IDEs (IntelliJ IDEA)
+.idea/
+*.iws
+*.iml
+*.ipr
+
+# JavaFX platform files
+*.jfx
+
+# Exclude configuration files for local builds
+*.local
+*.env
+.env.*
