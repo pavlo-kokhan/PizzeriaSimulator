@@ -1,6 +1,7 @@
 package org.example.pizzeriasimulator.services;
 
 import lombok.Getter;
+import org.example.pizzeriasimulator.models.cookers.Cooker;
 import org.example.pizzeriasimulator.models.customer.Customer;
 import org.example.pizzeriasimulator.models.simulation.Simulation;
 import org.example.pizzeriasimulator.models.dtos.StartSimulationDto;
@@ -9,6 +10,7 @@ import org.example.pizzeriasimulator.services.customers.generation.CustomerGener
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,17 +31,25 @@ public class PizzeriaSimulationService {
         String id = generateSimulationId();
         simulations.put(id, simulation);
 
-        // todo
+        // for test
+        List<Cooker> cookers = cookerGenerator
+                .generateCookers(startGenerationDto.getCookersCount());
+        List<Customer> customers = customerGenerator
+                .generateCustomers(startGenerationDto.getCustomerGenerationStrategy());
+
+        simulation.addCookers(cookers);
+        simulation.addCustomers(customers);
 
         return id;
     }
 
     private Simulation createSimulation(StartSimulationDto startGenerationDto) {
+        // todo
         return new Simulation(startGenerationDto);
     }
 
     private String generateSimulationId() {
-        return "SIM-" + UUID.randomUUID();
+        return "SIMULATION-" + UUID.randomUUID();
     }
 
     private void subscribeOnCustomerPizzas(Customer customer) {

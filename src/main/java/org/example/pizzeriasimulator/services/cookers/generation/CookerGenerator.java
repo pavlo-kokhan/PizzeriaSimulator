@@ -1,12 +1,65 @@
 package org.example.pizzeriasimulator.services.cookers.generation;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import lombok.NoArgsConstructor;
+import org.example.pizzeriasimulator.models.cookers.BakingCooker;
 import org.example.pizzeriasimulator.models.cookers.Cooker;
+import org.example.pizzeriasimulator.models.cookers.DoughCooker;
+import org.example.pizzeriasimulator.models.cookers.UltimateCooker;
+import org.example.pizzeriasimulator.services.customers.generation.RandomNamesProvider;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
+@NoArgsConstructor
 public class CookerGenerator {
-    public List<Cooker> generateCookers(int cookersCount) {
-        // todo - generate random count of baking, dough and ultimate cookers
-        return List.of();
+    private static final int MIN_COOKERS = 3;
+    private static final int MAX_COOKERS = 10;
+
+    public List<Cooker> generateCookers(@Min(MIN_COOKERS)
+                                        @Max(MAX_COOKERS)
+                                        int cookersCount) {
+        if (cookersCount < MIN_COOKERS || cookersCount > MAX_COOKERS) {
+            throw new IllegalArgumentException(
+                    String.format("cookersCount must be in range of (%d - %d)", MIN_COOKERS, MAX_COOKERS));
+        }
+
+        List<Cooker> cookers = new ArrayList<>(generateBaseCookers());
+        Random random = new Random();
+
+        int remainingCookers = cookersCount - 3;
+
+        int bakingCookersCount = random.nextInt(remainingCookers + 1);
+        remainingCookers -= bakingCookersCount;
+
+        int doughCookersCount = random.nextInt(remainingCookers + 1);
+        remainingCookers -= doughCookersCount;
+
+        int ultimateCookersCount = remainingCookers;
+
+        for (int i = 0; i < bakingCookersCount; i++) {
+            cookers.add(new BakingCooker(RandomNamesProvider.getRandomName()));
+        }
+
+        for (int i = 0; i < doughCookersCount; i++) {
+            cookers.add(new DoughCooker(RandomNamesProvider.getRandomName()));
+        }
+
+        for (int i = 0; i < ultimateCookersCount; i++) {
+            cookers.add(new UltimateCooker(RandomNamesProvider.getRandomName()));
+        }
+
+        return cookers;
+    }
+
+    private List<Cooker> generateBaseCookers() {
+        List<Cooker> cookers = new ArrayList<>();
+        cookers.add(new DoughCooker(RandomNamesProvider.getRandomName()));
+        cookers.add(new BakingCooker(RandomNamesProvider.getRandomName()));
+        cookers.add(new UltimateCooker(RandomNamesProvider.getRandomName()));
+
+        return cookers;
     }
 }

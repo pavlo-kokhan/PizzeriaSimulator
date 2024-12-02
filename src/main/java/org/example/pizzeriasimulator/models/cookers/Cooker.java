@@ -1,20 +1,23 @@
 package org.example.pizzeriasimulator.models.cookers;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.example.pizzeriasimulator.models.pizza.Pizza;
 
+import javax.management.ConstructorParameters;
+
 @Getter
-@Setter
 public abstract class Cooker {
+    @Setter
+    protected String name;
+    @Setter
     protected Cooker nextCooker;
+    @Setter
     protected Boolean isAvailable;
 
-    public Cooker() {}
+    protected String workingStrategy;
 
-    public Cooker(Cooker nextCooker, Boolean isAvailable) {
-        this.nextCooker = nextCooker;
-        this.isAvailable = isAvailable;
+    public Cooker(String name) {
+        this.name = name;
     }
 
     public abstract void processPizza(Pizza pizza);
