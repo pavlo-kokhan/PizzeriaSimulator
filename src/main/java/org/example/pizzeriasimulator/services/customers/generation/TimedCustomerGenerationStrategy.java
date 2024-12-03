@@ -1,10 +1,14 @@
 package org.example.pizzeriasimulator.services.customers.generation;
 
 import org.example.pizzeriasimulator.models.customer.Customer;
+import org.example.pizzeriasimulator.models.order.Order;
+import org.example.pizzeriasimulator.models.pizza.Pizza;
+import org.example.pizzeriasimulator.models.pizza.PizzaTypes;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class TimedCustomerGenerationStrategy implements CustomerGenerationStrategy {
     private final Integer minCustomersCount;
@@ -22,10 +26,16 @@ public class TimedCustomerGenerationStrategy implements CustomerGenerationStrate
     @Override
     public List<Customer> generateCustomers() {
         List<Customer> customers = new ArrayList<>();
+        Random random = new Random();
         int count = calculateCustomersCount();
+        List<Pizza> pizzas = new ArrayList<>();
+
+        for (int i = 0; i < random.nextInt(5) + 1; i++) {
+            pizzas.add(new Pizza(PizzaTypes.values()[random.nextInt(PizzaTypes.values().length)]));
+        }
 
         for (int i = 0; i < count; i++) {
-            customers.add(new Customer(RandomNamesProvider.getRandomName()));
+            customers.add(new Customer(RandomNamesProvider.getRandomName(), new Order(pizzas)));
         }
 
         return customers;
@@ -34,7 +44,6 @@ public class TimedCustomerGenerationStrategy implements CustomerGenerationStrate
     private Integer calculateCustomersCount() {
         LocalTime currentTime = LocalTime.now();
 
-        // todo - hardcode
         if (isWithinTimeRange(currentTime, LocalTime.of(9, 0), LocalTime.of(12, 0))) {
             return minCustomersCount;
         } else if (isWithinTimeRange(currentTime, LocalTime.of(12, 0), LocalTime.of(13, 0))) {

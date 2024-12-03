@@ -33,6 +33,7 @@ public class Simulation {
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
+        customer.getOrder().getPizzas().forEach(pizzaLogger::subscribeOnPizza);
     }
 
     public void addCustomers(List<Customer> customers) {

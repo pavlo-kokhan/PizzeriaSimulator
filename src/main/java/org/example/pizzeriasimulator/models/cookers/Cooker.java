@@ -8,10 +8,8 @@ import javax.management.ConstructorParameters;
 @Getter
 public abstract class Cooker {
     @Setter
-    protected String name;
-    @Setter
     protected Cooker nextCooker;
-    @Setter
+    protected String name;
     protected Boolean isAvailable = true;
 
     protected String workingStrategy;
@@ -21,5 +19,16 @@ public abstract class Cooker {
     }
 
     public abstract Boolean canHandle(Pizza pizza);
-    public abstract void processPizza(Pizza pizza);
+    public abstract void processPizzaCore(Pizza pizza);
+
+    public void processPizza(Pizza pizza) {
+        if (!canHandle(pizza) && nextCooker != null) {
+            nextCooker.processPizza(pizza);
+        } else {
+            processPizzaCore(pizza);
+            if (nextCooker != null) {
+                nextCooker.processPizza(pizza);
+            }
+        }
+    }
 }

@@ -2,12 +2,12 @@ package org.example.pizzeriasimulator.models.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.example.pizzeriasimulator.models.cookers.Cooker;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class CookersResponseDto {
-    private final List<CookerResponseDto> cookers;
+public class PizzasResponseDto {
+    private final List<PizzaResponseDto> pizzas;
 }

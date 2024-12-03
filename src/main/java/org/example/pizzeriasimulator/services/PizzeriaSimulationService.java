@@ -44,6 +44,8 @@ public class PizzeriaSimulationService {
         // Запускаємо обробку піц кухарями
         startCookerProcessing(simulation);
 
+        simulation.startSimulation();
+
         return id;
     }
 
@@ -65,9 +67,9 @@ public class PizzeriaSimulationService {
             customers.forEach(customer -> {
                 simulation.addCustomer(customer);
                 customer.getOrder().getPizzas().forEach(simulation::addPizza);
-                subscribeOnCustomerPizzas(customer); // ?
+                subscribeOnCustomerPizzas(customer);
             });
-        }, 0, 5, TimeUnit.SECONDS); // Генеруємо клієнтів кожні 5 секунд
+        }, 0, 15, TimeUnit.SECONDS);
     }
 
     private void startCookerProcessing(Simulation simulation) {
@@ -97,11 +99,6 @@ public class PizzeriaSimulationService {
         }));
     }
 
-    @PreDestroy
-    public void shutdownExecutor() {
-        executor.shutdown();
-    }
-
     private void subscribeOnCustomerPizzas(Customer customer) {
         customer.getOrder().getPizzas().forEach(pizza -> {
             pizza.addObserver((previousPizza, currentPizza, reason) -> {
@@ -110,5 +107,10 @@ public class PizzeriaSimulationService {
                         ". Reason: " + reason);
             });
         });
+    }
+
+    @PreDestroy
+    public void shutdownExecutor() {
+        executor.shutdown();
     }
 }

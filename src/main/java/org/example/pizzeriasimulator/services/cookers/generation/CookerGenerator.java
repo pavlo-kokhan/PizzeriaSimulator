@@ -21,11 +21,6 @@ public class CookerGenerator {
     public List<Cooker> generateCookers(@Min(MIN_COOKERS)
                                         @Max(MAX_COOKERS)
                                         int cookersCount) {
-        if (cookersCount < MIN_COOKERS || cookersCount > MAX_COOKERS) {
-            throw new IllegalArgumentException(
-                    String.format("cookersCount must be in range of (%d - %d)", MIN_COOKERS, MAX_COOKERS));
-        }
-
         List<Cooker> cookers = new ArrayList<>(generateBaseCookers());
         Random random = new Random();
 
@@ -49,6 +44,14 @@ public class CookerGenerator {
 
         for (int i = 0; i < ultimateCookersCount; i++) {
             cookers.add(new UltimateCooker(RandomNamesProvider.getRandomName()));
+        }
+
+        for (int i = 0; i < cookers.size(); i++) {
+            Cooker currentCooker = cookers.get(i);
+            if (i + 1 < cookers.size()) {
+                Cooker nextCooker = cookers.get(i + 1);
+                currentCooker.setNextCooker(nextCooker);
+            }
         }
 
         return cookers;

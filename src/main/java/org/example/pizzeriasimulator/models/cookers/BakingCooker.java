@@ -16,7 +16,7 @@ public class BakingCooker extends Cooker {
     }
 
     @Override
-    public void processPizza(Pizza pizza) {
+    public void processPizzaCore(Pizza pizza) {
         isAvailable = false;
         pizza.changePreparationStage(PizzaPreparationStages.BAKING,
                 String.format("Baking started by %s", name));

@@ -16,7 +16,7 @@ public class UltimateCooker extends Cooker {
     }
 
     @Override
-    public void processPizza(Pizza pizza) {
+    public void processPizzaCore(Pizza pizza) {
         isAvailable = false;
 
         switch (pizza.getPreparationStage()) {

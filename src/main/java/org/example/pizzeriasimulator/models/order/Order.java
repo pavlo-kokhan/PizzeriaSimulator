@@ -25,6 +25,8 @@ public class Order {
         } else if (pizzas.stream().anyMatch(pizza -> (pizza.getPreparationStage() != PizzaPreparationStages.NONE)
                 && (pizza.getPreparationStage() != PizzaPreparationStages.DONE))) {
             preparationStage = OrderPreparationStages.COOKING;
+        } else if (pizzas.stream().allMatch(pizza -> pizza.getPreparationStage() == PizzaPreparationStages.NONE)) {
+            preparationStage = OrderPreparationStages.SUBMITTED_TO_COOK;
         }
     }
 }
