@@ -11,13 +11,15 @@ public class BakingCooker extends Cooker {
 
     @Override
     public Boolean canHandle(Pizza pizza) {
-        return (pizza.getPreparationStage() == PizzaPreparationStages.DOUGH)
+        return (pizza.getPreparationStage() == PizzaPreparationStages.DOUGH_COMPLETED)
                 && isAvailable;
     }
 
     @Override
     public void processPizzaCore(Pizza pizza) {
-        isAvailable = false;
+        if (pizza.getPreparationStage() == PizzaPreparationStages.DONE) {
+            return;
+        }
 
         sleep(2000);
 
@@ -28,7 +30,5 @@ public class BakingCooker extends Cooker {
 
         pizza.changePreparationStage(PizzaPreparationStages.DONE,
                 String.format("Baking completed by %s", name));
-
-        isAvailable = true;
     }
 }

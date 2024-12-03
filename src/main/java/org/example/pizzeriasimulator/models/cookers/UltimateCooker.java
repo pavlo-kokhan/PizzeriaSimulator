@@ -17,7 +17,9 @@ public class UltimateCooker extends Cooker {
 
     @Override
     public void processPizzaCore(Pizza pizza) {
-        isAvailable = false;
+        if (pizza.getPreparationStage() == PizzaPreparationStages.DONE) {
+            return;
+        }
 
         switch (pizza.getPreparationStage()) {
             case NONE -> {
@@ -52,10 +54,6 @@ public class UltimateCooker extends Cooker {
                 pizza.changePreparationStage(PizzaPreparationStages.DONE,
                         String.format("Baking completed by %s", name));
             }
-            default -> throw new IllegalStateException(
-                    String.format("Unexpected stage %s for pizza in %s", pizza.getPreparationStage(), name));
         }
-
-        isAvailable = true;
     }
 }

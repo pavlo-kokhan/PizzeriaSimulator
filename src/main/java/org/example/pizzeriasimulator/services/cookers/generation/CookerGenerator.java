@@ -54,6 +54,8 @@ public class CookerGenerator {
             }
         }
 
+//        cookers.get(cookers.size() - 1).setNextCooker(cookers.get(0));
+
         return cookers;
     }
 

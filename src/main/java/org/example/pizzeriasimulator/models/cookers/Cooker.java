@@ -22,13 +22,18 @@ public abstract class Cooker {
     public abstract void processPizzaCore(Pizza pizza);
 
     public void processPizza(Pizza pizza) {
-        if (!canHandle(pizza) && nextCooker != null) {
-            nextCooker.processPizza(pizza);
-        } else {
-            processPizzaCore(pizza);
-            if (nextCooker != null) {
-                nextCooker.processPizza(pizza);
+        if (canHandle(pizza)) {
+            try {
+                isAvailable = false;
+                processPizzaCore(pizza);
+
+            } finally {
+                isAvailable = true;
             }
+        }
+
+        if (nextCooker != null) {
+            nextCooker.processPizza(pizza);
         }
     }
 

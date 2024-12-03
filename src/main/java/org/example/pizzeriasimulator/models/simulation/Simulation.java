@@ -9,40 +9,39 @@ import org.example.pizzeriasimulator.models.dtos.StartSimulationDto;
 import org.example.pizzeriasimulator.models.order.Order;
 import org.example.pizzeriasimulator.models.pizza.Pizza;
 import org.example.pizzeriasimulator.models.pizza.PizzaLog;
+import org.example.pizzeriasimulator.models.pizza.PizzaPreparationStages;
 import org.example.pizzeriasimulator.services.loggers.HistoryPizzaLogger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 @Getter
-@RequiredArgsConstructor
 public class Simulation {
     @NotNull
     private final StartSimulationDto generationConfig;
 
     private final List<Customer> customers = new ArrayList<>();
-    private final List<Cooker> cookers = new ArrayList<>();
+    private final List<Cooker> cookers;
     private final HistoryPizzaLogger pizzaLogger = new HistoryPizzaLogger();
 
-    private final BlockingQueue<Pizza> pizzaQueue = new LinkedBlockingQueue<>();
+    public Simulation(StartSimulationDto generationConfig, List<Cooker> cookers) {
+        this.generationConfig = generationConfig;
+        this.cookers = cookers;
+    }
 
     public void addCustomer(Customer customer) {
         customers.add(customer);
         customer.getOrder().getPizzas().forEach(pizzaLogger::subscribeOnPizza);
     }
 
-    public void addCookers(List<Cooker> cookers) {
-        this.cookers.addAll(cookers);
-    }
-
-    public void addPizza(Pizza pizza) {
-        pizzaQueue.offer(pizza);
-    }
-
-    public Pizza getNextPizza() throws InterruptedException {
-        return pizzaQueue.take();
+    public Optional<Pizza> getNotPreparedPizza() {
+        return customers.stream()
+                .flatMap(c -> c.getOrder().getPizzas().stream())
+                .filter(p -> p.getPreparationStage() != PizzaPreparationStages.DONE)
+                .findFirst();
     }
 
     public List<PizzaLog> getPizzaLogs() {

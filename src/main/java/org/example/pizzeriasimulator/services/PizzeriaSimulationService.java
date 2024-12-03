@@ -31,28 +31,20 @@ public class PizzeriaSimulationService {
     private final CookerGenerator cookerGenerator = new CookerGenerator();
 
     private final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
+    private final ScheduledExecutorService customerGenerationExecutor = Executors.newScheduledThreadPool(1);
 
     public String runSimulation(StartSimulationDto startSimulationDto) {
-        Simulation simulation = createSimulation(startSimulationDto);
+        List<Cooker> cookers = cookerGenerator.generateCookers(startSimulationDto.getCookersCount());
+        Simulation simulation = new Simulation(startSimulationDto, cookers);
         String id = generateSimulationId();
+
         simulations.put(id, simulation);
 
-        List<Cooker> cookers = cookerGenerator.generateCookers(startSimulationDto.getCookersCount());
-        simulation.addCookers(cookers);
-
-        // Запускаємо генерацію нових клієнтів
         startCustomerGeneration(simulation);
 
-        // Запускаємо обробку піц кухарями
         startCookerProcessing(simulation);
 
-        simulation.startSimulation();
-
         return id;
-    }
-
-    private Simulation createSimulation(StartSimulationDto startGenerationDto) {
-        return new Simulation(startGenerationDto);
     }
 
     private String generateSimulationId() {
@@ -60,21 +52,24 @@ public class PizzeriaSimulationService {
     }
 
     private void startCustomerGeneration(Simulation simulation) {
-        executor.scheduleAtFixedRate(() -> {
-            List<Customer> customers = customerGenerator
-                    .generateCustomers(simulation
-                            .getGenerationConfig()
-                            .getCustomerGenerationStrategy());
+        customerGenerationExecutor.scheduleAtFixedRate(() -> {
+            try {
+                List<Customer> customers = customerGenerator
+                        .generateCustomers(simulation
+                                .getGenerationConfig()
+                                .getCustomerGenerationStrategy());
 
-            if (simulation.getCustomers().size() + customers.size() <= 20) {
-                customers.forEach(customer -> {
-                    simulation.addCustomer(customer);
-                    customer.getOrder().getPizzas().forEach(simulation::addPizza);
-                    subscribeOnCustomerPizzas(customer);
-                });
-            } else {
-                System.out.printf("Restaurant is not available, skipping %d customers%n",
-                        customers.size());
+                if (simulation.getCustomers().size() + customers.size() <= 20) {
+                    customers.forEach(customer -> {
+                        simulation.addCustomer(customer);
+                        subscribeOnCustomerPizzas(customer);
+                    });
+                } else {
+                    System.out.printf("Restaurant is not available, skipping %d customers%n",
+                            customers.size());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         }, 0, 15, TimeUnit.SECONDS);
     }
@@ -83,8 +78,12 @@ public class PizzeriaSimulationService {
         simulation.getCookers().forEach(cooker -> executor.submit(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    Pizza pizza = simulation.getNextPizza();
-                    cooker.processPizza(pizza);
+                    Optional<Pizza> pizza = simulation.getNotPreparedPizza();
+                    if (pizza.isPresent()) {
+                        cooker.processPizza(pizza.get());
+                    } else {
+                        continue;
+                    }
 
                     List<Customer> customers = simulation.getCustomers();
                     customers.stream()

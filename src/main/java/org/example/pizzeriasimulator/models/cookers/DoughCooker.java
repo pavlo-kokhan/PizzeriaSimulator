@@ -17,7 +17,9 @@ public class DoughCooker extends Cooker {
 
     @Override
     public void processPizzaCore(Pizza pizza) {
-        isAvailable = false;
+        if (pizza.getPreparationStage() == PizzaPreparationStages.DONE) {
+            return;
+        }
 
         sleep(1000);
 
@@ -28,7 +30,5 @@ public class DoughCooker extends Cooker {
 
         pizza.changePreparationStage(PizzaPreparationStages.DOUGH_COMPLETED,
                 String.format("Dough completed by %s", name));
-
-        isAvailable = true;
     }
 }

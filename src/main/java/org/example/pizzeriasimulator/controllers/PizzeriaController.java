@@ -28,18 +28,6 @@ public class PizzeriaController {
         return ResponseEntity.ok(new StartSimulationResponseDto(simulationId));
     }
 
-//    @GetMapping("/cookers")
-//    public ResponseEntity<CookersResponseDto> getAllCookers(@RequestParam String simulationId) {
-//        Simulation simulation = service.getSimulations().get(simulationId);
-//        return ResponseEntity.ok(new CookersResponseDto(simulation.getCookers()));
-//    }
-//
-//    @GetMapping("/customers")
-//    public ResponseEntity<CustomerResponseDto> getAllCustomers(String simulationId) {
-//        Simulation simulation = service.getSimulations().get(simulationId);
-//        return ResponseEntity.ok(new CustomerResponseDto(simulation.getCustomers()));
-//    }
-
     @GetMapping("/simulation-status")
     public ResponseEntity<SimulationStatusResponseDto> getSimulationStatus(String simulationId) {
         Simulation simulation = service.getSimulations().get(simulationId);
@@ -54,7 +42,9 @@ public class PizzeriaController {
 
         List<CustomerResponseDto> customerDtos = new ArrayList<>();
         customers.forEach(customer -> {
-            customerDtos.add(new CustomerResponseDto(customer));
+            if (customer != null) {
+                customerDtos.add(new CustomerResponseDto(customer));
+            }
         });
 
         List<CookerResponseDto> cookerDtos = new ArrayList<>();

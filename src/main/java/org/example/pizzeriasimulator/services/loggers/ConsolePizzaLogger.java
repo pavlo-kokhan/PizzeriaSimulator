@@ -8,7 +8,7 @@ public class ConsolePizzaLogger extends PizzaLogger {
     public void subscribeOnPizza(Pizza pizza) {
         pizza.addObserver(((previousPizza, currentPizza, reason) -> {
             pizzaLogs.add(new PizzaLog(previousPizza, currentPizza, reason));
-            System.out.printf("Previous pizza: %s %s, Current pizza: %s %s, Reason: %s%n",
+            System.out.printf("Previous pizza: %s State: %s, Current pizza: %s State: %s, Reason: %s%n",
                     previousPizza.getType(), previousPizza.getPreparationStage(),
                     currentPizza.getType(), currentPizza.getPreparationStage(), reason);
         }));
