@@ -26,7 +26,7 @@ public abstract class Cooker {
             try {
                 isAvailable = false;
                 processPizzaCore(pizza);
-
+                return;
             } finally {
                 isAvailable = true;
             }

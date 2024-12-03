@@ -13,10 +13,21 @@ public class Pizza {
     private PizzaTypes type;
     private PizzaPreparationStages preparationStage;
     private List<PizzaPreparationStageChangedCallback> callbacks = new ArrayList<>();
+    private boolean isBeingProcessed = false;
 
     public Pizza(PizzaTypes type) {
         this.type = type;
         preparationStage = PizzaPreparationStages.NONE;
+    }
+
+    public synchronized boolean startProcessing() {
+        if (isBeingProcessed) return false;
+        isBeingProcessed = true;
+        return true;
+    }
+
+    public synchronized void finishProcessing() {
+        isBeingProcessed = false;
     }
 
     public void addObserver(PizzaPreparationStageChangedCallback callback) {

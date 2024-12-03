@@ -79,10 +79,12 @@ public class PizzeriaSimulationService {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
                     Optional<Pizza> pizza = simulation.getNotPreparedPizza();
-                    if (pizza.isPresent()) {
-                        cooker.processPizza(pizza.get());
-                    } else {
-                        continue;
+                    if (pizza.isPresent() && pizza.get().startProcessing()) {
+                        try {
+                            cooker.processPizza(pizza.get());
+                        } finally {
+                            pizza.get().finishProcessing();
+                        }
                     }
 
                     List<Customer> customers = simulation.getCustomers();

@@ -37,7 +37,7 @@ public class Simulation {
         customer.getOrder().getPizzas().forEach(pizzaLogger::subscribeOnPizza);
     }
 
-    public Optional<Pizza> getNotPreparedPizza() {
+    public synchronized Optional<Pizza> getNotPreparedPizza() {
         return customers.stream()
                 .flatMap(c -> c.getOrder().getPizzas().stream())
                 .filter(p -> p.getPreparationStage() != PizzaPreparationStages.DONE)
