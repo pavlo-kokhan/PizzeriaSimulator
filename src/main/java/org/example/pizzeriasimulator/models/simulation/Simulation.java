@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-@Getter
 public class Simulation {
     @NotNull
     private final StartSimulationDto generationConfig;
@@ -41,13 +40,21 @@ public class Simulation {
         synchronized (customers) {
             return customers.stream()
                     .flatMap(c -> c.getOrder().getPizzas().stream())
-                    .filter(p -> p.getPreparationStage() != PizzaPreparationStages.DONE)
+                    .filter(p -> p.getPreparationStage() != PizzaPreparationStages.DONE && p.tryLock())
                     .findFirst();
         }
     }
 
+    public synchronized StartSimulationDto getStartSimulationDto() {
+        return generationConfig;
+    }
+
     public synchronized List<Customer> getCustomers() {
         return customers;
+    }
+
+    public synchronized List<Cooker> getCookers() {
+        return cookers;
     }
 
     public List<PizzaLog> getPizzaLogs() {

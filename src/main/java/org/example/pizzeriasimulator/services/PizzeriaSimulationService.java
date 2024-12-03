@@ -52,11 +52,11 @@ public class PizzeriaSimulationService {
     }
 
     private void startCustomerGeneration(Simulation simulation) {
-        executor.scheduleAtFixedRate(() -> {
+        customerGenerationExecutor.scheduleAtFixedRate(() -> {
             try {
                 List<Customer> customers = customerGenerator
                         .generateCustomers(simulation
-                                .getGenerationConfig()
+                                .getStartSimulationDto()
                                 .getCustomerGenerationStrategy());
 
                 if (simulation.getCustomers().size() + customers.size() <= 20) {
@@ -84,17 +84,18 @@ public class PizzeriaSimulationService {
                             cooker.processPizza(pizza.get());
                         } finally {
                             pizza.get().finishProcessing();
+                            pizza.get().unlock();
                         }
                     }
 
-                    List<Customer> customers = simulation.getCustomers();
-                    customers.stream()
-                            .map(Customer::getOrder)
-                            .forEach(Order::checkAndUpdatePreparationStage);
+                    synchronized (simulation.getCustomers()) {
+                        simulation.getCustomers().stream()
+                                .map(Customer::getOrder)
+                                .forEach(Order::checkAndUpdatePreparationStage);
 
-                    customers.stream()
-                            .filter(c -> c != null && c.getOrder().getPreparationStage() == OrderPreparationStages.DONE)
-                            .forEach(customers::remove);
+                        simulation.getCustomers().removeIf(c ->
+                                c.getOrder().getPreparationStage() == OrderPreparationStages.DONE);
+                    }
 
                 } catch (Exception e) {
                     if (e instanceof InterruptedException) {

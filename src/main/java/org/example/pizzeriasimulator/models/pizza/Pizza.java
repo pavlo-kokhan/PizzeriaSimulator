@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Getter
 @Setter
@@ -15,9 +16,19 @@ public class Pizza {
     private List<PizzaPreparationStageChangedCallback> callbacks = new ArrayList<>();
     private boolean isBeingProcessed = false;
 
+    private final ReentrantLock lock = new ReentrantLock();
+
     public Pizza(PizzaTypes type) {
         this.type = type;
         preparationStage = PizzaPreparationStages.NONE;
+    }
+
+    public boolean tryLock() {
+        return lock.tryLock();
+    }
+
+    public void unlock() {
+        lock.unlock();
     }
 
     public synchronized boolean startProcessing() {

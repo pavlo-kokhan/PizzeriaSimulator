@@ -22,17 +22,12 @@ public class CookerGenerator {
                                         @Max(MAX_COOKERS)
                                         int cookersCount) {
         List<Cooker> cookers = new ArrayList<>(generateBaseCookers());
-        Random random = new Random();
 
-        int remainingCookers = cookersCount - 3;
+        int totalCookers = cookersCount - 3;
 
-        int bakingCookersCount = random.nextInt(remainingCookers + 1);
-        remainingCookers -= bakingCookersCount;
-
-        int doughCookersCount = random.nextInt(remainingCookers + 1);
-        remainingCookers -= doughCookersCount;
-
-        int ultimateCookersCount = remainingCookers;
+        int bakingCookersCount = (int) Math.round(totalCookers * 0.4); // 40% на BakingCooker
+        int doughCookersCount = (int) Math.round(totalCookers * 0.3);  // 30% на DoughCooker
+        int ultimateCookersCount = totalCookers - bakingCookersCount - doughCookersCount; // Решта
 
         for (int i = 0; i < doughCookersCount; i++) {
             cookers.add(new DoughCooker(RandomNamesProvider.getRandomName()));
@@ -53,8 +48,6 @@ public class CookerGenerator {
                 currentCooker.setNextCooker(nextCooker);
             }
         }
-
-//        cookers.get(cookers.size() - 1).setNextCooker(cookers.get(0));
 
         return cookers;
     }
