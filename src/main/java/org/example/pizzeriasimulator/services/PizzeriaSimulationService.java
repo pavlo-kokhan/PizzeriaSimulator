@@ -5,12 +5,14 @@ import lombok.Getter;
 import org.example.pizzeriasimulator.models.cookers.Cooker;
 import org.example.pizzeriasimulator.models.customer.Customer;
 import org.example.pizzeriasimulator.models.order.Order;
+import org.example.pizzeriasimulator.models.order.OrderPreparationStages;
 import org.example.pizzeriasimulator.models.pizza.Pizza;
 import org.example.pizzeriasimulator.models.pizza.PizzaPreparationStages;
 import org.example.pizzeriasimulator.models.simulation.Simulation;
 import org.example.pizzeriasimulator.models.dtos.StartSimulationDto;
 import org.example.pizzeriasimulator.services.cookers.generation.CookerGenerator;
 import org.example.pizzeriasimulator.services.customers.generation.CustomerGenerator;
+import org.example.pizzeriasimulator.services.loggers.ConsolePizzaLogger;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -64,49 +66,48 @@ public class PizzeriaSimulationService {
                             .getGenerationConfig()
                             .getCustomerGenerationStrategy());
 
-            customers.forEach(customer -> {
-                simulation.addCustomer(customer);
-                customer.getOrder().getPizzas().forEach(simulation::addPizza);
-                subscribeOnCustomerPizzas(customer);
-            });
+            if (simulation.getCustomers().size() + customers.size() <= 20) {
+                customers.forEach(customer -> {
+                    simulation.addCustomer(customer);
+                    customer.getOrder().getPizzas().forEach(simulation::addPizza);
+                    subscribeOnCustomerPizzas(customer);
+                });
+            } else {
+                System.out.printf("Restaurant is not available, skipping %d customers%n",
+                        customers.size());
+            }
         }, 0, 15, TimeUnit.SECONDS);
     }
 
     private void startCookerProcessing(Simulation simulation) {
         simulation.getCookers().forEach(cooker -> executor.submit(() -> {
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 try {
-                    Optional<Pizza> pizzaOpt = simulation.getCustomers().stream()
-                            .flatMap(customer -> customer.getOrder().getPizzas().stream())
-                            .filter(pizza -> cooker.canHandle(pizza) && pizza.getPreparationStage() != PizzaPreparationStages.DONE)
-                            .findFirst();
+                    Pizza pizza = simulation.getNextPizza();
+                    cooker.processPizza(pizza);
 
-                    if (pizzaOpt.isPresent()) {
-                        Pizza pizza = pizzaOpt.get();
-                        cooker.processPizza(pizza);
+                    List<Customer> customers = simulation.getCustomers();
+                    customers.stream()
+                            .map(Customer::getOrder)
+                            .forEach(Order::checkAndUpdatePreparationStage);
 
-                        simulation.getCustomers().stream()
-                                .map(Customer::getOrder)
-                                .forEach(Order::checkAndUpdatePreparationStage);
-                    } else {
-                        Thread.sleep(500);
+                    customers.stream()
+                            .filter(c -> c != null && c.getOrder().getPreparationStage() == OrderPreparationStages.DONE)
+                            .forEach(customers::remove);
+
+                } catch (Exception e) {
+                    if (e instanceof InterruptedException) {
+                        Thread.currentThread().interrupt();
+                        break;
                     }
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    break;
                 }
             }
         }));
     }
 
     private void subscribeOnCustomerPizzas(Customer customer) {
-        customer.getOrder().getPizzas().forEach(pizza -> {
-            pizza.addObserver((previousPizza, currentPizza, reason) -> {
-                System.out.println("Pizza " + previousPizza.getType() + " changed stage from "
-                        + previousPizza.getPreparationStage() + " to " + currentPizza.getPreparationStage() +
-                        ". Reason: " + reason);
-            });
-        });
+        ConsolePizzaLogger consolePizzaLogger = new ConsolePizzaLogger();
+        customer.getOrder().getPizzas().forEach(consolePizzaLogger::subscribeOnPizza);
     }
 
     @PreDestroy

@@ -20,13 +20,27 @@ public class Order {
     }
 
     public void checkAndUpdatePreparationStage() {
-        if (pizzas.stream().allMatch(pizza -> pizza.getPreparationStage() == PizzaPreparationStages.DONE)) {
+        // Піц немає, або всі готові
+        if (pizzas.isEmpty() || pizzas.stream()
+                .allMatch(pizza -> pizza.getPreparationStage() == PizzaPreparationStages.DONE)) {
             preparationStage = OrderPreparationStages.DONE;
-        } else if (pizzas.stream().anyMatch(pizza -> (pizza.getPreparationStage() != PizzaPreparationStages.NONE)
-                && (pizza.getPreparationStage() != PizzaPreparationStages.DONE))) {
-            preparationStage = OrderPreparationStages.COOKING;
-        } else if (pizzas.stream().allMatch(pizza -> pizza.getPreparationStage() == PizzaPreparationStages.NONE)) {
-            preparationStage = OrderPreparationStages.SUBMITTED_TO_COOK;
+            return;
         }
+
+        // Всі піци ще не почали готуватися
+        if (pizzas.stream()
+                .allMatch(pizza -> pizza.getPreparationStage() == PizzaPreparationStages.NONE)) {
+            preparationStage = OrderPreparationStages.SUBMITTED_TO_COOK;
+            return;
+        }
+
+        // Якщо хоча б одна піца ще не готова
+        if (pizzas.stream()
+                .anyMatch(pizza -> pizza.getPreparationStage() != PizzaPreparationStages.DONE)) {
+            preparationStage = OrderPreparationStages.COOKING;
+            return;
+        }
+
+        preparationStage = OrderPreparationStages.DONE;
     }
 }

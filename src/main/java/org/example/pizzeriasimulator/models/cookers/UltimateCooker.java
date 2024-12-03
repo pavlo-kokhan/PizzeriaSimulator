@@ -21,22 +21,34 @@ public class UltimateCooker extends Cooker {
 
         switch (pizza.getPreparationStage()) {
             case NONE -> {
+                sleep(1000);
+
                 pizza.changePreparationStage(PizzaPreparationStages.DOUGH,
                         String.format("Dough started by %s", name));
-                sleep(2000);
+
+                sleep(4000);
+
                 pizza.changePreparationStage(PizzaPreparationStages.DOUGH_COMPLETED,
                         String.format("Dough completed by %s", name));
 
+                sleep(2000);
+
                 pizza.changePreparationStage(PizzaPreparationStages.BAKING,
                         String.format("Baking started by %s", name));
-                sleep(2000);
+
+                sleep(4000);
+
                 pizza.changePreparationStage(PizzaPreparationStages.DONE,
                         String.format("Baking completed by %s", name));
             }
             case DOUGH -> {
+                sleep(2000);
+
                 pizza.changePreparationStage(PizzaPreparationStages.BAKING,
                         String.format("Baking started by %s", name));
-                sleep(2000);
+
+                sleep(4000);
+
                 pizza.changePreparationStage(PizzaPreparationStages.DONE,
                         String.format("Baking completed by %s", name));
             }
@@ -45,13 +57,5 @@ public class UltimateCooker extends Cooker {
         }
 
         isAvailable = true;
-    }
-
-    private void sleep(int milliseconds) {
-        try {
-            Thread.sleep(milliseconds);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
     }
 }

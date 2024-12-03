@@ -18,15 +18,17 @@ public class DoughCooker extends Cooker {
     @Override
     public void processPizzaCore(Pizza pizza) {
         isAvailable = false;
+
+        sleep(1000);
+
         pizza.changePreparationStage(PizzaPreparationStages.DOUGH,
                 String.format("Dough started by %s", name));
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+        sleep(4000);
+
         pizza.changePreparationStage(PizzaPreparationStages.DOUGH_COMPLETED,
                 String.format("Dough completed by %s", name));
+
         isAvailable = true;
     }
 }

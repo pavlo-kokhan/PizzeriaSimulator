@@ -3,7 +3,6 @@ package org.example.pizzeriasimulator.models.dtos;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.example.pizzeriasimulator.models.pizza.PizzaLog;
-import org.example.pizzeriasimulator.models.pizza.PizzaPreparationStages;
 
 @Getter
 @AllArgsConstructor

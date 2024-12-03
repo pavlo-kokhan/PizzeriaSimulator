@@ -9,8 +9,12 @@ import org.example.pizzeriasimulator.models.pizza.Pizza;
 import java.util.List;
 
 @Getter
-@AllArgsConstructor
 public class Customer {
     private final String name;
     private final Order order;
+
+    public Customer(String name, Order order) {
+        this.name = name;
+        this.order = order;
+    }
 }

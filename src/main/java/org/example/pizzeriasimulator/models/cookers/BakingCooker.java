@@ -18,15 +18,17 @@ public class BakingCooker extends Cooker {
     @Override
     public void processPizzaCore(Pizza pizza) {
         isAvailable = false;
+
+        sleep(2000);
+
         pizza.changePreparationStage(PizzaPreparationStages.BAKING,
                 String.format("Baking started by %s", name));
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+
+        sleep(4000);
+
         pizza.changePreparationStage(PizzaPreparationStages.DONE,
                 String.format("Baking completed by %s", name));
+
         isAvailable = true;
     }
 }

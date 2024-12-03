@@ -1,4 +1,4 @@
-package org.example.pizzeriasimulator.services;
+package org.example.pizzeriasimulator.services.loggers;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,7 +10,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class PizzaLogger {
+public class HistoryPizzaLogger extends PizzaLogger {
     private final List<PizzaLog> pizzaLogs = new ArrayList<>();
 
     public void subscribeOnPizza(Pizza pizza) {

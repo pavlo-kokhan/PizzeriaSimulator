@@ -34,12 +34,12 @@ public class CookerGenerator {
 
         int ultimateCookersCount = remainingCookers;
 
-        for (int i = 0; i < bakingCookersCount; i++) {
-            cookers.add(new BakingCooker(RandomNamesProvider.getRandomName()));
-        }
-
         for (int i = 0; i < doughCookersCount; i++) {
             cookers.add(new DoughCooker(RandomNamesProvider.getRandomName()));
+        }
+
+        for (int i = 0; i < bakingCookersCount; i++) {
+            cookers.add(new BakingCooker(RandomNamesProvider.getRandomName()));
         }
 
         for (int i = 0; i < ultimateCookersCount; i++) {

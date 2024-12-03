@@ -24,13 +24,15 @@ public class RandomCustomerGenerationStrategy implements CustomerGenerationStrat
         List<Customer> customers = new ArrayList<>();
         Random random = new Random();
         int count = random.nextInt(maxCustomersCount - minCustomersCount + 1) + minCustomersCount;
-        List<Pizza> pizzas = new ArrayList<>();
-
-        for (int i = 0; i < random.nextInt(5) + 1; i++) {
-            pizzas.add(new Pizza(PizzaTypes.values()[random.nextInt(PizzaTypes.values().length)]));
-        }
 
         for (int i = 0; i < count; i++) {
+            List<Pizza> pizzas = new ArrayList<>();
+            int pizzasCount = random.nextInt(5) + 1;
+
+            for (int j = 0; j < pizzasCount; j++) {
+                pizzas.add(new Pizza(PizzaTypes.values()[random.nextInt(PizzaTypes.values().length)]));
+            }
+
             customers.add(new Customer(RandomNamesProvider.getRandomName(), new Order(pizzas)));
         }
 
