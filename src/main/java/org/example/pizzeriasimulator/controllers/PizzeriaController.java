@@ -15,6 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/pizzeria")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PizzeriaController {
     private PizzeriaSimulationService service;
 
