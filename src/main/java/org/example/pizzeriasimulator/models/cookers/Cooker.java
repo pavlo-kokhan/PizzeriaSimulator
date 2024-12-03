@@ -12,7 +12,7 @@ public abstract class Cooker {
     @Setter
     protected Cooker nextCooker;
     @Setter
-    protected Boolean isAvailable;
+    protected Boolean isAvailable = true;
 
     protected String workingStrategy;
 
@@ -20,7 +20,6 @@ public abstract class Cooker {
         this.name = name;
     }
 
-    public abstract void processPizza(Pizza pizza);
     public abstract Boolean canHandle(Pizza pizza);
-    public abstract void handle();
+    public abstract void processPizza(Pizza pizza);
 }
