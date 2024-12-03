@@ -28,28 +28,28 @@ public class UltimateCooker extends Cooker {
                 pizza.changePreparationStage(PizzaPreparationStages.DOUGH,
                         String.format("Dough started by %s", name));
 
-                sleep(4000);
+                sleep(3000);
 
                 pizza.changePreparationStage(PizzaPreparationStages.DOUGH_COMPLETED,
                         String.format("Dough completed by %s", name));
 
-                sleep(2000);
+                sleep(1000);
 
                 pizza.changePreparationStage(PizzaPreparationStages.BAKING,
                         String.format("Baking started by %s", name));
 
-                sleep(4000);
+                sleep(2500);
 
                 pizza.changePreparationStage(PizzaPreparationStages.DONE,
                         String.format("Baking completed by %s", name));
             }
             case DOUGH -> {
-                sleep(2000);
+                sleep(1000);
 
                 pizza.changePreparationStage(PizzaPreparationStages.BAKING,
                         String.format("Baking started by %s", name));
 
-                sleep(4000);
+                sleep(2500);
 
                 pizza.changePreparationStage(PizzaPreparationStages.DONE,
                         String.format("Baking completed by %s", name));

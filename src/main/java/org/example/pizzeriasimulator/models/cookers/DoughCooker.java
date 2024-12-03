@@ -26,7 +26,7 @@ public class DoughCooker extends Cooker {
         pizza.changePreparationStage(PizzaPreparationStages.DOUGH,
                 String.format("Dough started by %s", name));
 
-        sleep(4000);
+        sleep(2500);
 
         pizza.changePreparationStage(PizzaPreparationStages.DOUGH_COMPLETED,
                 String.format("Dough completed by %s", name));

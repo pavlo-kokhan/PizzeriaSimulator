@@ -52,7 +52,7 @@ public class PizzeriaSimulationService {
     }
 
     private void startCustomerGeneration(Simulation simulation) {
-        customerGenerationExecutor.scheduleAtFixedRate(() -> {
+        executor.scheduleAtFixedRate(() -> {
             try {
                 List<Customer> customers = customerGenerator
                         .generateCustomers(simulation

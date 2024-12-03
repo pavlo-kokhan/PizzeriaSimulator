@@ -37,11 +37,17 @@ public class Simulation {
         customer.getOrder().getPizzas().forEach(pizzaLogger::subscribeOnPizza);
     }
 
-    public synchronized Optional<Pizza> getNotPreparedPizza() {
-        return customers.stream()
-                .flatMap(c -> c.getOrder().getPizzas().stream())
-                .filter(p -> p.getPreparationStage() != PizzaPreparationStages.DONE)
-                .findFirst();
+    public Optional<Pizza> getNotPreparedPizza() {
+        synchronized (customers) {
+            return customers.stream()
+                    .flatMap(c -> c.getOrder().getPizzas().stream())
+                    .filter(p -> p.getPreparationStage() != PizzaPreparationStages.DONE)
+                    .findFirst();
+        }
+    }
+
+    public synchronized List<Customer> getCustomers() {
+        return customers;
     }
 
     public List<PizzaLog> getPizzaLogs() {
